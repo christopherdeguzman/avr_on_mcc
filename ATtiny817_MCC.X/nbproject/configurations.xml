@@ -20,6 +20,9 @@
           <itemPath>mcc_generated_files/include/usart0.h</itemPath>
           <itemPath>mcc_generated_files/include/spi0.h</itemPath>
           <itemPath>mcc_generated_files/include/tca0.h</itemPath>
+          <itemPath>mcc_generated_files/include/vref.h</itemPath>
+          <itemPath>mcc_generated_files/include/ac0.h</itemPath>
+          <itemPath>mcc_generated_files/include/adc0.h</itemPath>
         </logicalFolder>
         <logicalFolder name="utils" displayName="utils" projectFiles="true">
           <logicalFolder name="assembler" displayName="assembler" projectFiles="true">
@@ -53,6 +56,9 @@
           <itemPath>mcc_generated_files/src/usart0.c</itemPath>
           <itemPath>mcc_generated_files/src/spi0.c</itemPath>
           <itemPath>mcc_generated_files/src/tca0.c</itemPath>
+          <itemPath>mcc_generated_files/src/vref.c</itemPath>
+          <itemPath>mcc_generated_files/src/ac0.c</itemPath>
+          <itemPath>mcc_generated_files/src/adc0.c</itemPath>
         </logicalFolder>
         <itemPath>mcc_generated_files/device_config.c</itemPath>
         <itemPath>mcc_generated_files/mcc.c</itemPath>

@@ -31,34 +31,18 @@
 */
 
 
-#ifndef MCC_H
-#define	MCC_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "utils/compiler.h"
-#include "include/pin_manager.h"
-#include "include/vref.h"
-#include "include/tca0.h"
-#include "include/ac0.h"
-#include "include/cpuint.h"
-#include "include/usart0.h"
-#include "include/spi0.h"
-#include "include/adc0.h"
-#include "config/clock_config.h"
+#include "../include/vref.h"
 
 /**
- * Initializes MCU, drivers and middleware in the project
-**/
-void SYSTEM_Initialize(void);
-int8_t BOD_Initialize();
-int8_t CLKCTRL_Initialize();
-int8_t SLPCTRL_Initialize();
-int8_t WDT_Initialize();
+ * \brief Initialize VREF interface
+ */
+int8_t VREF_Initialize()
+{
+    //ADC0REFSEL 2V5; DAC0REFSEL 2V5; 
+    VREF.CTRLA = 0x22;
 
-#ifdef __cplusplus
+    //ADC0REFEN disabled; DAC0REFEN disabled; 
+    VREF.CTRLB = 0x00;
+
+    return 0;
 }
-#endif
-#endif	/* MCC_H */

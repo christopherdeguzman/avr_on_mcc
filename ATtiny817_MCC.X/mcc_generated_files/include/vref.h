@@ -1,3 +1,4 @@
+
 /**
   @Company
     Microchip Technology Inc.
@@ -31,34 +32,23 @@
 */
 
 
-#ifndef MCC_H
-#define	MCC_H
+#ifndef VREF_H_INCLUDED
+#define VREF_H_INCLUDED
+
+#include "../utils/compiler.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "utils/compiler.h"
-#include "include/pin_manager.h"
-#include "include/vref.h"
-#include "include/tca0.h"
-#include "include/ac0.h"
-#include "include/cpuint.h"
-#include "include/usart0.h"
-#include "include/spi0.h"
-#include "include/adc0.h"
-#include "config/clock_config.h"
-
 /**
- * Initializes MCU, drivers and middleware in the project
-**/
-void SYSTEM_Initialize(void);
-int8_t BOD_Initialize();
-int8_t CLKCTRL_Initialize();
-int8_t SLPCTRL_Initialize();
-int8_t WDT_Initialize();
+ * \brief Initialize vref interface
+ * \return Initialization status.
+ */
+int8_t VREF_Initialize(void);
 
 #ifdef __cplusplus
 }
 #endif
-#endif	/* MCC_H */
+
+#endif /* VREF_H_INCLUDED */

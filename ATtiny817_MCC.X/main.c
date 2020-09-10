@@ -24,11 +24,12 @@
 #include "mcc_generated_files/mcc.h"
 #include "util/delay.h"
 
-//uint8_t SW0_flag = 1;
-//
-//void mySW0_ISR (void) {
-//    SW0_flag ^= 1;
-//}
+volatile uint8_t SW0_flag = 1;
+
+void mySW0_ISR (void) {
+    SW0_flag ^= 1;
+}
+
 void toggle_LED0(void) {
     LED0_Toggle();
 }
@@ -42,12 +43,13 @@ int main(void)
     /* Initializes MCU, drivers and middleware */
     SYSTEM_Initialize();
 
-    
+    //WREN command
     SS_SetLow();
     SPI0_ExchangeByte(0x06);
     SS_SetHigh();
     _delay_ms(100);
     
+    //WRITE command
     SS_SetLow();
     SPI0_ExchangeByte(0x02);
     SPI0_ExchangeByte(0x01);
@@ -56,6 +58,7 @@ int main(void)
     SS_SetHigh();
     _delay_ms(100);
     
+    //READ command
     SS_SetLow();
     SPI0_ExchangeByte(0x03);
     SPI0_ExchangeByte(0x01);
