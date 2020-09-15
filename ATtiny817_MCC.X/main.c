@@ -23,8 +23,15 @@
 
 #include "mcc_generated_files/mcc.h"
 #include "util/delay.h"
+#include <math.h>
+
+#define WREN_CMD    0x06
+#define BYTE_WR_CMD 0x02
+#define RD_CMD      0x03
+#define RDSR_CMD    0x05
 
 volatile uint8_t SW0_flag = 1;
+adc_result_t adcVal;
 
 void mySW0_ISR (void) {
     SW0_flag ^= 1;
@@ -34,6 +41,48 @@ void toggle_LED0(void) {
     LED0_Toggle();
 }
 
+double readThermistor(uint16_t rawAdc) {
+  double temp;
+  temp = log(10000.0*((256.0/rawAdc-1))); 
+  temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * temp * temp ))* temp );
+  temp = temp - 273.15;            // Convert Kelvin to Celcius
+   //Temp = (Temp * 9.0)/ 5.0 + 32.0; // Convert Celcius to Fahrenheit
+   return temp;
+}
+
+//WREN command
+void writeEnable_EEPROM(void){
+    SS_SetLow();
+    SPI0_ExchangeByte(WREN_CMD);
+    SS_SetHigh();
+    _delay_ms(100);
+}
+
+ //WRITE command
+void writeByte_EEPROM(uint16_t address, uint8_t dataByte) {
+    SS_SetLow();
+    SPI0_ExchangeByte(BYTE_WR_CMD);
+    SPI0_ExchangeByte((address >> 8) & 0xFF);
+    SPI0_ExchangeByte((address & 0xFF));
+    SPI0_ExchangeByte(dataByte);
+    SS_SetHigh();
+    _delay_ms(100);
+}
+
+//READ command
+uint8_t readByte_EEPROM(uint16_t address) {
+    uint8_t readBuffer = 0;
+    SS_SetLow();
+    SPI0_ExchangeByte(RD_CMD);
+    SPI0_ExchangeByte((address >> 8) & 0xFF);
+    SPI0_ExchangeByte((address & 0xFF));
+    SPI0_ExchangeByte(0x00);
+    readBuffer = SPI0.DATA;
+    SS_SetHigh();
+    _delay_ms(100);
+    return readBuffer;
+}
+    
 
 /*
     Main application
@@ -41,45 +90,28 @@ void toggle_LED0(void) {
 int main(void)
 {
     /* Initializes MCU, drivers and middleware */
+    uint8_t var = 0;
     SYSTEM_Initialize();
+    
 
-    //WREN command
-    SS_SetLow();
-    SPI0_ExchangeByte(0x06);
-    SS_SetHigh();
-    _delay_ms(100);
-    
-    //WRITE command
-    SS_SetLow();
-    SPI0_ExchangeByte(0x02);
-    SPI0_ExchangeByte(0x01);
-    SPI0_ExchangeByte(0xFA);
-    SPI0_ExchangeByte(0xCC);
-    SS_SetHigh();
-    _delay_ms(100);
-    
-    //READ command
-    SS_SetLow();
-    SPI0_ExchangeByte(0x03);
-    SPI0_ExchangeByte(0x01);
-    SPI0_ExchangeByte(0xFA);
-    SPI0_ExchangeByte(0x00);
-    SS_SetHigh();
-    _delay_ms(100);
+    writeEnable_EEPROM();
+    writeByte_EEPROM(0x2311, 0xAB);
+    var = readByte_EEPROM(0x2311);
+    readByte_EEPROM(0x01FA);
         
-    
     TCA0_SetOVFIsrCallback(toggle_LED0);
+    
     
     /* Replace with your application code */
     while (1){
-        
-
-//        USART0_Write(USART0_Read());
         printf("Hello World!\n\r");
-
-        
         _delay_ms(500);
         
+        adcVal = ADC0_GetConversion(ADC_MUXPOS_AIN10_gc);
+//        USART0_Write(adcVal);
+        printf("ADC: %d\n\r", adcVal);
+        
+        _delay_ms(10);
     }
 }
 /**

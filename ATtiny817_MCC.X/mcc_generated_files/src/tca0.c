@@ -32,7 +32,6 @@
 
 
 #include "../include/tca0.h"
-#include "../include/pin_manager.h"
 
 void TCA0_DefaultCMP0IsrCallback(void);
 void (*TCA0_CMP0_isr_cb)(void) = &TCA0_DefaultCMP0IsrCallback;
