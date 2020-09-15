@@ -121,13 +121,13 @@ ISR(TCA0_OVF_vect)
 int8_t TCA0_Initialize()
 {
     //Compare 0
-    TCA0.SINGLE.CMP0 = 0x61A7;
+    TCA0.SINGLE.CMP0 = 0x7A11;
 
     //Compare 1
-    TCA0.SINGLE.CMP1 = 0x61A7;
+    TCA0.SINGLE.CMP1 = 0x7A11;
 
     //Compare 2
-    TCA0.SINGLE.CMP2 = 0x61A7;
+    TCA0.SINGLE.CMP2 = 0x7A11;
 
     //Count
     TCA0.SINGLE.CNT = 0x00;
@@ -166,13 +166,13 @@ int8_t TCA0_Initialize()
     TCA0.SINGLE.INTFLAGS = 0x00;
 
     //Period
-    TCA0.SINGLE.PER = 0x61A7;
+    TCA0.SINGLE.PER = 0x7A11;
 
     //Temporary data for 16-bit Access
     TCA0.SINGLE.TEMP = 0x00;
 
-    //CLKSEL DIV64; ENABLE enabled; 
-    TCA0.SINGLE.CTRLA = 0x0B;
+    //CLKSEL DIV256; ENABLE enabled; 
+    TCA0.SINGLE.CTRLA = 0x0D;
 
     return 0;
 }

@@ -86,7 +86,7 @@
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="ATtiny_DFP" vendor="Microchip" version="2.4.108"/>
+        <pack name="ATtiny_DFP" vendor="Microchip" version="2.3.92"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -212,14 +212,7 @@
         <property key="user-pack-device-support" value=""/>
       </XC8-config-global>
       <mEdbgTool>
-        <property key="ADC0 DBGCTRL DBGRUN" value="true"/>
         <property key="AutoSelectMemRanges" value="auto"/>
-        <property key="RTC DBGCTRL DBGRUN" value="true"/>
-        <property key="RTC PITDBGCTRL DBGRUN" value="true"/>
-        <property key="TCB0 DBGCTRL DBGRUN" value="true"/>
-        <property key="TCD0 DBGCTRL DBGRUN" value="true"/>
-        <property key="TWI0 DBGCTRL DBGRUN" value="true"/>
-        <property key="USART0 DBGCTRL DBGRUN" value="true"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="updi"/>
         <property key="communication.speed" value="0.500"/>

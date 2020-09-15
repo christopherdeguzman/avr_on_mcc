@@ -33,14 +33,21 @@
 volatile uint8_t SW0_flag = 1;
 adc_result_t adcVal;
 
-void mySW0_ISR (void) {
+void toggle_SW0_flag (void) {
     SW0_flag ^= 1;
 }
 
 void toggle_LED0(void) {
+    TCA0_ClearOverflowInterruptFlag();
     LED0_Toggle();
 }
 
+void printAdcVal(void) {
+    printf("ADC: %d\n\r", adcVal);
+    _delay_ms(10);
+}
+
+//not yet tested function to convert ADC value to temperature
 double readThermistor(uint16_t rawAdc) {
   double temp;
   temp = log(10000.0*((256.0/rawAdc-1))); 
@@ -77,7 +84,7 @@ uint8_t readByte_EEPROM(uint16_t address) {
     SPI0_ExchangeByte((address >> 8) & 0xFF);
     SPI0_ExchangeByte((address & 0xFF));
     SPI0_ExchangeByte(0x00);
-    readBuffer = SPI0.DATA;
+    readBuffer = SPI0_ReadByte();
     SS_SetHigh();
     _delay_ms(100);
     return readBuffer;
@@ -95,23 +102,41 @@ int main(void)
     
 
     writeEnable_EEPROM();
-    writeByte_EEPROM(0x2311, 0xAB);
+    writeByte_EEPROM(0x2311, 0xCE);
     var = readByte_EEPROM(0x2311);
     readByte_EEPROM(0x01FA);
         
     TCA0_SetOVFIsrCallback(toggle_LED0);
+    PORTC_SW0_SetInterruptHandler(toggle_SW0_flag);
     
     
     /* Replace with your application code */
     while (1){
         printf("Hello World!\n\r");
         _delay_ms(500);
-        
+//        
         adcVal = ADC0_GetConversion(ADC_MUXPOS_AIN10_gc);
-//        USART0_Write(adcVal);
         printf("ADC: %d\n\r", adcVal);
-        
         _delay_ms(10);
+        
+        printf("EEPROM value is: %X\n\r", var);
+        _delay_ms(10);
+        
+        switch (SW0_flag){
+            case 0:
+//                TCA0_DisableInterrupt();
+                TCA0.SINGLE.CTRLA = 0x0C; //256 prescaler, disable timer
+                if (LED0_GetValue()) {
+                    LED0_SetLow();
+                }
+                break;
+            case 1:
+//                TCA0_EnableInterrupt();
+                TCA0.SINGLE.CTRLA = 0x0D; //256 prescaler, enable timer
+                break;
+            default:
+                break;
+        }
     }
 }
 /**

@@ -62,8 +62,8 @@ int8_t ADC0_Initialize()
     //STARTEI disabled; 
 	ADC0.EVCTRL = 0x00;
 
-    //WCMP disabled; RESRDY disabled; 
-	ADC0.INTCTRL = 0x00;
+    //WCMP disabled; RESRDY enabled; 
+	ADC0.INTCTRL = 0x01;
 
     //MUXPOS AIN10; 
 	ADC0.MUXPOS = 0x0A;
