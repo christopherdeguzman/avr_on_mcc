@@ -30,6 +30,9 @@
 #define RD_CMD      0x03
 #define RDSR_CMD    0x05
 
+#define EEPROM_ADD 0x2311
+#define DATA_TO_WR 0xCA
+
 volatile uint8_t SW0_flag = 1;
 adc_result_t adcVal;
 
@@ -97,42 +100,43 @@ uint8_t readByte_EEPROM(uint16_t address) {
 int main(void)
 {
     /* Initializes MCU, drivers and middleware */
-    uint8_t var = 0;
+    uint8_t readDataVar = 0;
     SYSTEM_Initialize();
     
 
     writeEnable_EEPROM();
-    writeByte_EEPROM(0x2311, 0xCE);
-    var = readByte_EEPROM(0x2311);
-    readByte_EEPROM(0x01FA);
+    writeByte_EEPROM(EEPROM_ADD, DATA_TO_WR);
+    readDataVar = readByte_EEPROM(EEPROM_ADD);
+    readByte_EEPROM(0x01FA);                                                    //previously written data to address 0x01FA
         
     TCA0_SetOVFIsrCallback(toggle_LED0);
     PORTC_SW0_SetInterruptHandler(toggle_SW0_flag);
+    
     
     
     /* Replace with your application code */
     while (1){
         printf("Hello World!\n\r");
         _delay_ms(500);
-//        
+        
         adcVal = ADC0_GetConversion(ADC_MUXPOS_AIN10_gc);
         printf("ADC: %d\n\r", adcVal);
         _delay_ms(10);
         
-        printf("EEPROM value is: %X\n\r", var);
+        printf("EEPROM value is: %X\n\r", readDataVar);
         _delay_ms(10);
         
         switch (SW0_flag){
             case 0:
 //                TCA0_DisableInterrupt();
-                TCA0.SINGLE.CTRLA = 0x0C; //256 prescaler, disable timer
+                TCA0.SINGLE.CTRLA = 0x0C;                                       //256 prescaler, disable timer
                 if (LED0_GetValue()) {
                     LED0_SetLow();
                 }
                 break;
             case 1:
 //                TCA0_EnableInterrupt();
-                TCA0.SINGLE.CTRLA = 0x0D; //256 prescaler, enable timer
+                TCA0.SINGLE.CTRLA = 0x0D;                                       //256 prescaler, enable timer
                 break;
             default:
                 break;
